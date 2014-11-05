@@ -3,11 +3,11 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 function preload () {
     game.stage.disableVisibilityChange = true;
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.load.image('logo', 'assets/phaser.png');
+    //game.load.image('logo', 'assets/phaser.png');
 
 }
 
-var logo;
+var ground;
 
 function create () {
 
@@ -32,11 +32,13 @@ function create () {
 }
 
 function update () {
-    
+
 }
 
 function render () {
+    ground.forEach(function(item) {
+        game.debug.renderRectangle(item,'#0fffff');
+    });
 
-    game.debug.renderRectangle(floor,'#0fffff');
 
 }
