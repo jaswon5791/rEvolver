@@ -12,11 +12,9 @@ var segh = 6;
 var segw = 50;
 
 function create () {
-    //game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
-    //game.physics.p2.setImpactEvents(true);
     game.physics.p2.restitution = 0.8;
-    game.physics.p2.gravity.y = 100;
+    game.physics.p2.gravity.y = 200;
 
     var gCol = game.physics.p2.createCollisionGroup();
     var bCol = game.physics.p2.createCollisionGroup();
