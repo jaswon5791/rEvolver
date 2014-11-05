@@ -2,7 +2,6 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 function preload () {
     game.stage.disableVisibilityChange = true;
-    //game.load.image('logo', 'assets/phaser.png');
 
 }
 
@@ -68,7 +67,7 @@ function create () {
 
     //create sprite from bitmap
     ball = game.add.sprite(0,0,bmball);
-    game.physics.p2.enable(ball,false);
+    game.physics.p2.enable(ball,true);
     ball.body.setCircle(5);
     ball.body.setCollisionGroup(bCol);
     ball.body.collides(gCol);
