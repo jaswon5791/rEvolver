@@ -8,6 +8,8 @@ function preload () {
 
 var ground;
 var ball;
+var segh = 6;
+var segw = 50;
 
 function create () {
     //game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -25,31 +27,37 @@ function create () {
     ground.enableBody = true;
     ground.physicsBodyType = Phaser.Physics.P2JS;
 
-    var nextx = 0;
-    var nexty = 15;
-    var complex = .15;
-    var dcomplex = .1;
+    var nextx = -5;
+    var nexty = 100;
+    var complex = .25;
+    var dcomplex = .05;
     for (var i = 0 ; i < 20 ; i++) {
         //create bitmap of segment
-        var bmd = game.add.bitmapData(50,5);
+        var bmd = game.add.bitmapData(segw,segh);
         bmd.ctx.fillStyle = "#0FFFFF";
         bmd.ctx.beginPath();
-        bmd.ctx.rect(0, 0, 50, 5);
+        bmd.ctx.rect(0, 0, segw, segh);
         bmd.ctx.fill();
 
         //make sprite from bitmap
         var shape = ground.create(nextx,nexty,bmd);
+        game.physics.p2.enable(shape,false);
+        shape.body.setRectangle(segw,segh,segw/2,segh/2);
         shape.body.setCollisionGroup(gCol);
         shape.body.collides(bCol);
-        //shape.body.immovable = true;
-
+        shape.body.static = true;
 
         //randomize
         ang = (Math.random())*complex;
-        shape.rotation = ang;
-        nextx += Math.cos(ang)*50;
-        nexty += Math.sin(ang)*50;
+        shape.anchor.setTo(0,0);
+        shape.body.rotation = ang;
+        xchange = Math.cos(ang)*(segw);
+        ychange = Math.sin(ang)*(segw);
+        nextx += xchange;
+        nexty += ychange;
         complex += dcomplex;
+
+
     }
 
     //create bitmap for ball
@@ -62,14 +70,14 @@ function create () {
 
     //create sprite from bitmap
     ball = game.add.sprite(0,0,bmball);
-    game.physics.arcade.enable(ball);
-    ball.body.setCircle(10);
+    game.physics.p2.enable(ball,false);
+    ball.body.setCircle(5);
     ball.body.setCollisionGroup(bCol);
-    ball.body.collides(gCol)
+    ball.body.collides(gCol);
 
 
 }
 
 function update () {
-    game.physics.arcade.collide(ball, ground);
+    //game.physics.arcade.collide(ball, ground);
 }
