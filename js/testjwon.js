@@ -9,6 +9,7 @@ var ground;
 var ball;
 var segh = 6;
 var segw = 50;
+var r = 10;
 
 function create () {
     game.physics.startSystem(Phaser.Physics.P2JS);
@@ -58,17 +59,17 @@ function create () {
     }
 
     //create bitmap for ball
-    var bmball = game.add.bitmapData(10,10);
+    var bmball = game.add.bitmapData(r*2,r*2);
     bmball.ctx.fillStyle = "FF0FFF";
     bmball.ctx.beginPath();
-    bmball.ctx.arc(5, 5, 5, 0, 2 * Math.PI, false);
+    bmball.ctx.arc(r, r, r, r, 2 * Math.PI, false);
     bmball.ctx.fill();
     bmball.ctx.closePath();
 
     //create sprite from bitmap
-    ball = game.add.sprite(5,5,bmball);
+    ball = game.add.sprite(r,r,bmball);
     game.physics.p2.enable(ball,true);
-    ball.body.setCircle(5);
+    ball.body.setCircle(r);
     ball.body.setCollisionGroup(bCol);
     ball.body.collides(gCol);
 
