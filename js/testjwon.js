@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update});
 
 function preload () {
     game.stage.disableVisibilityChange = true;
@@ -14,10 +14,13 @@ function create () {
     ground = game.add.group();
     for (var i = 0 ; i < 10 ; i++) {
         var rect = game.add.sprite(i*game.world.width/11, game.world.height/2, null);
-        game.physics.enable(rect, Phaser.Physics.ARCADE);
-        rect.body.setSize(50, 5, 0, 0); // set the size of the rectangle
-        rect.body.immovable = true;
-        ground.add(rect);
+        var graphics = game.add.graphics(0, 0);
+        graphics.beginFill(0xFFFF0B);
+        graphics.drawRect(i*game.world.width/11, game.world.height/2,50,5);
+        graphics.endFill();
+        game.physics.enable(graphics, Phaser.Physics.ARCADE);
+        graphics.body.immovable = true;
+        ground.add(graphics);
     }
 
     /*
@@ -32,13 +35,5 @@ function create () {
 }
 
 function update () {
-
-}
-
-function render () {
-    ground.forEach(function(item) {
-        game.debug.renderRectangle(item,'#0fffff');
-    });
-
 
 }
