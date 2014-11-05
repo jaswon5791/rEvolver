@@ -12,25 +12,26 @@ var ground;
 function create () {
 
     ground = game.add.group();
-    for (var i = 0 ; i < 10 ; i++) {
-        var rect = game.add.sprite(i*game.world.width/11, game.world.height/2, null);
-        var graphics = game.add.graphics(0, 0);
-        graphics.beginFill(0xFFFF0B);
-        graphics.drawRect(i*game.world.width/11, game.world.height/2,50,5);
-        graphics.endFill();
-        game.physics.enable(graphics, Phaser.Physics.ARCADE);
-        graphics.body.immovable = true;
-        ground.add(graphics);
+
+    var nextx = 0;
+    var nexty = game.world.height/2;
+    var complex = .1;
+    var dcomplex = .15;
+    for (var i = 0 ; i < 20 ; i++) {
+        var shape = game.add.graphics(nextx, nexty);
+        shape.beginFill(0x0FFFFF);
+        shape.drawRect(0,0,50,5);
+        shape.endFill();
+        ang = (Math.random()-.5)*complex;
+        shape.rotation = ang;
+        nextx += Math.cos(ang)*50;
+        nexty += Math.sin(ang)*50;
+        complex += dcomplex;
+        game.physics.enable(shape, Phaser.Physics.ARCADE);
+        ground.add(shape);
     }
 
-    /*
-    logo = game.add.sprite(game.world.centerX, 0, 'logo');
-    //logo.anchor.setTo(0.5, 0.5);
-    game.physics.arcade.enable(logo);
-    logo.body.bounce.y = .9;
-    logo.body.gravity.y = 400;
-    logo.body.collideWorldBounds = true;
-    */
+
 
 }
 
