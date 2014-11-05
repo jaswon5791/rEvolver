@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update});
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update/*, render: render*/});
 
 function preload () {
     game.stage.disableVisibilityChange = true;
@@ -68,7 +68,7 @@ function create () {
 
     //create sprite from bitmap
     ball = game.add.sprite(r,r,bmball);
-    game.physics.p2.enable(ball,true);
+    game.physics.p2.enable(ball,false);
     ball.body.setCircle(r);
     ball.body.setCollisionGroup(bCol);
     ball.body.collides(gCol);
@@ -78,4 +78,8 @@ function create () {
 
 function update () {
     //game.physics.arcade.collide(ball, ground);
+}
+
+function rander () {
+    //this.game.debug.renderBodyInfo(player, 150, 150);
 }
