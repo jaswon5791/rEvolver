@@ -32,7 +32,7 @@ function create () {
 }
 
 function update () {
-    logo.angle += 1;
+    
 }
 
 function render () {
