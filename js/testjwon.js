@@ -60,7 +60,7 @@ function create () {
 
     //create bitmap for ball
     var bmball = game.add.bitmapData(r*2,r*2);
-    bmball.ctx.fillStyle = "FF0FFF";
+    bmball.ctx.fillStyle = "xFF0FFF";
     bmball.ctx.beginPath();
     bmball.ctx.arc(r, r, r, 0, 2 * Math.PI, false);
     bmball.ctx.fill();
