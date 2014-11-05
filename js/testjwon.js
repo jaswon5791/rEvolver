@@ -68,7 +68,7 @@ function create () {
 
     //create sprite from bitmap
     ball = game.add.sprite(0,0,bmball);
-    game.physics.p2.enable(ball,false);
+    game.physics.p2.enable(ball,true);
     ball.body.setCircle(5);
     ball.body.setCollisionGroup(bCol);
     ball.body.collides(gCol);
