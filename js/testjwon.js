@@ -12,7 +12,7 @@ var d2r = 2*Math.PI/360;
 var anglearray = [];
 var ground;
 var ball;
-var segh = 6;
+var segh = 20;
 var segw = 50;
 var startx = 400;
 var starty = 300;
@@ -43,17 +43,9 @@ function create () {
         addSeg();
     }
 
-    //create bitmap for ball
-    var bmball = game.add.bitmapData(r*2,r*2);
-    bmball.ctx.fillStyle = "#FF0FFF";
-    bmball.ctx.beginPath();
-    bmball.ctx.arc(r, r, r, 0, 2 * Math.PI, false);
-    bmball.ctx.fill();
-    bmball.ctx.closePath();
-
     //create sprite from bitmap
     var polygons = new Array(3);
-    for (var i = 0 ; i < 3 ; i++) {
+    for (var i = 0 ; i < polygons.length ; i++) {
         polygons[i] = [Math.random()*40+20,Math.random()*40+20];
     }
     //ball = game.add.sprite(r+startx,r+starty-40,bmball);
@@ -66,6 +58,7 @@ function create () {
 
     game.camera.follow(ball);
 
+    game.input.onDown.add(click, this);
 
 }
 
@@ -74,6 +67,10 @@ function update () {
         addSeg();
     }
     ball.body.angularVelocity = 5;
+}
+
+function click(pointer) {
+    addObstacle(50,50,pointer.x+game.camera.x,pointer.y+game.camera.y);
 }
 
 function polyBitmap(vertices) {
@@ -101,10 +98,26 @@ function polyBitmap(vertices) {
     return bm;
 }
 
+function addObstacle (w,h,x,y) {
+    var bmd = game.add.bitmapData(w,h);
+    bmd.ctx.fillStyle = '#'+Math.floor(Math.random()*16000000+777215).toString(16);
+    bmd.ctx.beginPath();
+    bmd.ctx.rect(0, 0, w, h);
+    bmd.ctx.fill();
+
+    //make sprite from bitmap
+    var shape = ground.create(x,y,bmd);
+    game.physics.p2.enable(shape,true);
+    shape.body.setRectangle(w,h);
+    shape.body.setCollisionGroup(gCol);
+    shape.body.collides(bCol);
+    shape.body.static = true;
+}
+
 function addSeg(col) {
     //create bitmap of segment
     var bmd = game.add.bitmapData(segw,segh);
-    bmd.ctx.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
+    bmd.ctx.fillStyle = '#'+Math.floor(Math.random()*16000000+777215).toString(16);
     bmd.ctx.beginPath();
     bmd.ctx.rect(0, 0, segw, segh);
     bmd.ctx.fill();
