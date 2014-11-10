@@ -4,6 +4,9 @@ function preload () {
     game.stage.disableVisibilityChange = true;
 
 }
+$(document).ready(function() {
+    setInterval(reset,200);
+})
 
 var gCol, bCol;
 
