@@ -21,26 +21,30 @@ var changea = d2r*7;
 var nextx = startx;
 var nexty = starty;
 var r = 10;
+var maxRad = 100;
+var minRad = 10;
 
+var radThetas = getRadThetas(8);
 function create () {
 
     game.world.setBounds(0, 0, 1e9, 1e6);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
-    //game.physics.p2.restitution = .8;
-    game.physics.p2.gravity.y = 400;
+    game.physics.p2.gravity.y = 0;
+    game.physics.p2.friction = 3.0;
 
     gCol = game.physics.p2.createCollisionGroup();
     bCol = game.physics.p2.createCollisionGroup();
 
     //create ground
 
-    ground = game.add.group();
+    /*ground = game.add.group();
     ground.enableBody = true;
     ground.physicsBodyType = Phaser.Physics.P2JS;
 
     for (var i = 0 ; i < 10 ; i++) {
         addSeg();
+<<<<<<< Updated upstream
     }
 
     //create sprite from bitmap
@@ -49,24 +53,31 @@ function create () {
         polygons[i] = [Math.random()*40+20,Math.random()*40+20];
     }
     //ball = game.add.sprite(r+startx,r+starty-40,bmball);
+=======
+    }*/
+>>>>>>> Stashed changes
     ball = game.add.sprite(r+startx,r+starty-80,null);
     game.physics.p2.enable(ball,true);
-    //ball.body.setCircle(r);
-    ball.body.addPolygon([],polygons);
+    ball.body.addPolygon([],toCartesianArr(radThetas));
     ball.body.setCollisionGroup(bCol);
     ball.body.collides(gCol);
 
     game.camera.follow(ball);
+<<<<<<< Updated upstream
 
     game.input.onDown.add(click, this);
 
+=======
+>>>>>>> Stashed changes
 }
 
 function update () {
     if (game.camera.x + game.world.width > nextx) {
-        addSeg();
+       // addSeg();
     }
-    ball.body.angularVelocity = 5;
+    ball.body.x = startx;
+    ball.body.y = starty;
+    //if(ball && ball.body.angularVelocity < 5) ball.body.angularVelocity = 5;
 }
 
 function click(pointer) {
@@ -98,6 +109,7 @@ function polyBitmap(vertices) {
     return bm;
 }
 
+<<<<<<< Updated upstream
 function addObstacle (w,h,x,y) {
     var bmd = game.add.bitmapData(w,h);
     bmd.ctx.fillStyle = '#'+Math.floor(Math.random()*16000000+777215).toString(16);
@@ -115,6 +127,9 @@ function addObstacle (w,h,x,y) {
 }
 
 function addSeg(col) {
+=======
+/*function addSeg(col) {
+>>>>>>> Stashed changes
     //create bitmap of segment
     var bmd = game.add.bitmapData(segw,segh);
     bmd.ctx.fillStyle = '#'+Math.floor(Math.random()*16000000+777215).toString(16);
@@ -135,9 +150,66 @@ function addSeg(col) {
     shape.body.rotation = nexta;
     nextx += Math.cos(nexta)*(segw);
     nexty += Math.sin(nexta)*(segw);
-    nexta += (Math.random()-.5)*changea;
-}
+    nexta += (Math.random()-0.5)*changea;
+    if(nexta < 0) nexta = 0;
+}*/
 
 function render () {
     //this.game.debug.renderBodyInfo(player, 150, 150);
 }
+function getRadThetas(v) {
+    //return [[0,0],[50,50],[100,0],[50,100]];
+    var points = new Array(v);
+    var anglepart = 2*Math.PI/v;
+    for (var i = 0 ; i < points.length ; i++) {
+        points[i] = [Math.floor(Math.random()*50),anglepart*i];
+    }
+    return points;
+}
+function reset() {
+    //ball.kill();
+    //ball = game.add.sprite(r+startx,r+starty-80,null);
+    //game.physics.p2.enable(ball,true);
+    //ball.body.setCircle(r);
+    radThetas = mutatePoints(radThetas,0.2);
+    ball.body.clearShapes();
+    ball.body.addPolygon([],toCartesianArr(radThetas));
+    ball.body.setCollisionGroup(bCol);
+    ball.body.collides(gCol);
+
+   // game.camera.follow(ball);
+}
+function mutatePoints(rt,mutationrate) {
+    var rtn = new Array(rt.length);
+    for(var i = 0; i < rt.length; i++) {
+        var r = mutateRadius(radThetas[i][0],mutationrate);
+        rtn[i] = [r,rt[i][1]];
+    }
+    return rtn;
+}
+function mutateRadius(r, mutationrate) {
+    var rtn = (r+r*(Math.random()-0.5)*mutationrate);
+    if(rtn > maxRad) {
+        rtn = maxRad;
+    } else if(rtn < minRad) {
+        rtn = minRad;
+    }
+    return rtn;
+}
+function toCartesianArr(arr) {
+    var rtn = new Array(arr.length);
+    for(var i = 0; i < arr.length; i++) {
+        rtn[i] = [arr[i][0]*Math.cos(arr[i][1]),arr[i][0]*Math.sin(arr[i][1])];
+    }
+    return rtn;
+}
+
+/*function copyPoints(arr) {
+    var rtn = new Array(arr.length);
+    for(var i = 0; i < arr.length; i++) {
+        rtn[i] = new Array(2);
+        rtn[i][0] = arr[i][0];
+        rtn[i][1] = arr[i][1];
+    }
+    return rtn;
+}*/

@@ -5,100 +5,170 @@ function preload () {
 
 }
 
+var gCol, bCol;
+
+var d2r = 2*Math.PI/360;
+
+var anglearray = [];
 var ground;
 var ball;
-var segh = 6;
+var segh = 20;
 var segw = 50;
+var startx = 400;
+var starty = 300;
+var nexta = d2r*10;
+var changea = d2r*7;
+var nextx = startx;
+var nexty = starty;
 var r = 10;
+var maxRad = 100;
+var minRad = 10;
 
+var radThetas = getRadThetas(8);
 function create () {
-    game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.restitution = 0.8;
-    game.physics.p2.gravity.y = 200;
 
-    //modify world and camera bounds
-  //  game.world.setBounds(0,0,8000,8000);
-    var gCol = game.physics.p2.createCollisionGroup();
-    var bCol = game.physics.p2.createCollisionGroup();
+    game.world.setBounds(0, 0, 1e9, 1e6);
+
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.gravity.y = 0;
+    game.physics.p2.friction = 3.0;
+
+    gCol = game.physics.p2.createCollisionGroup();
+    bCol = game.physics.p2.createCollisionGroup();
 
     //create ground
 
-    ground = game.add.group();
+    /*ground = game.add.group();
     ground.enableBody = true;
     ground.physicsBodyType = Phaser.Physics.P2JS;
 
-    var nextx = -5;
-    var nexty = 100;
-    var complex = .25;
-    var dcomplex = .05;
-    for (var i = 0 ; i < 20 ; i++) {
-        //create bitmap of segment
-        var bmd = game.add.bitmapData(segw,segh);
-        bmd.ctx.fillStyle = "#0FFFFF";
-        bmd.ctx.beginPath();
-        bmd.ctx.rect(0, 0, segw, segh);
-        bmd.ctx.fill();
-
-        //make sprite from bitmap
-        var shape = ground.create(nextx,nexty,bmd);
-        game.physics.p2.enable(shape,false);
-        shape.body.setRectangle(segw,segh,segw/2,segh/2);
-        shape.body.setCollisionGroup(gCol);
-        shape.body.collides(bCol);
-        shape.body.static = true;
-
-        //randomize
-        ang = (Math.random())*complex;
-        shape.anchor.setTo(0,0);
-        shape.body.rotation = ang;
-        xchange = Math.cos(ang)*(segw);
-        ychange = Math.sin(ang)*(segw);
-        nextx += xchange;
-        nexty += ychange;
-        complex += dcomplex;
-
-
-    }
-
-    //create bitmap for ball
-    var bmball = game.add.bitmapData(r*2,r*2);
-    bmball.ctx.fillStyle = "#FF0FFF";
-    bmball.ctx.beginPath();
-    bmball.ctx.arc(r, r, r, 0, 2 * Math.PI, false);
-    bmball.ctx.fill();
-    bmball.ctx.closePath();
-
-    //create sprite from bitmap
-    ball = game.add.sprite(r,r,bmball);
-    game.physics.p2.enable(ball,false);
-    ball.body.setCircle(r);
+    for (var i = 0 ; i < 10 ; i++) {
+        addSeg();
+    }*/
+    ball = game.add.sprite(r+startx,r+starty-80,null);
+    game.physics.p2.enable(ball,true);
+    ball.body.addPolygon([],toCartesianArr(radThetas));
     ball.body.setCollisionGroup(bCol);
     ball.body.collides(gCol);
 
     game.camera.follow(ball);
-    polygonSprite();
-
 }
 
 function update () {
-    //game.physics.arcade.collide(ball, ground);
-
-   // game.camera.x = ball.position.x -200;
-    //game.camera.y = ball.position.y -200;
+    if (game.camera.x + game.world.width > nextx) {
+       // addSeg();
+    }
+    ball.body.x = startx;
+    ball.body.y = starty;
+    //if(ball && ball.body.angularVelocity < 5) ball.body.angularVelocity = 5;
 }
+
+function polyBitmap(vertices) {
+    //find w and h
+    minx = maxx = vertices[0][0];
+    miny = maxy = vertices[0][1];
+    for (var i = 1 ; i < vertices.length ; i++) {
+        minx = Math.min(minx, vertices[i][0]);
+        maxx = Math.max(maxx, vertices[i][0]);
+        miny = Math.min(miny, vertices[i][1]);
+        maxy = Math.max(maxy, vertices[i][1]);
+    }
+    w = Math.abs(maxx-minx);
+    h = Math.abs(maxy-miny);
+
+    var bm = game.add.bitmapData(w,h);
+    bm.ctx.fillStyle = "#FF0FFF";
+    bm.ctx.beginPath();
+    bm.ctx.moveTo(vertices[0][0]-minx,vertices[0][1]-miny);
+    for (var i = 1 ; i < vertices.length ; i++) {
+        bm.ctx.lineTo(vertices[i][0]-minx,vertices[i][1]-miny);
+    }
+    bm.ctx.fill();
+    bm.ctx.closePath();
+    return bm;
+}
+
+/*function addSeg(col) {
+    //create bitmap of segment
+    var bmd = game.add.bitmapData(segw,segh);
+    bmd.ctx.fillStyle = '#'+Math.floor(Math.random()*16000000+777215).toString(16);
+    bmd.ctx.beginPath();
+    bmd.ctx.rect(0, 0, segw, segh);
+    bmd.ctx.fill();
+
+    //make sprite from bitmap
+    var shape = ground.create(nextx,nexty,bmd);
+    game.physics.p2.enable(shape,false);
+    shape.body.setRectangle(segw,segh,segw/2,segh/2);
+    shape.body.setCollisionGroup(gCol);
+    shape.body.collides(bCol);
+    shape.body.static = true;
+
+    //randomize
+    shape.anchor.setTo(0,0);
+    shape.body.rotation = nexta;
+    nextx += Math.cos(nexta)*(segw);
+    nexty += Math.sin(nexta)*(segw);
+    nexta += (Math.random()-0.5)*changea;
+    if(nexta < 0) nexta = 0;
+}*/
 
 function render () {
     //this.game.debug.renderBodyInfo(player, 150, 150);
-
 }
+function getRadThetas(v) {
+    //return [[0,0],[50,50],[100,0],[50,100]];
+    var points = new Array(v);
+    var anglepart = 2*Math.PI/v;
+    for (var i = 0 ; i < points.length ; i++) {
+        points[i] = [Math.floor(Math.random()*50),anglepart*i];
+    }
+    return points;
+}
+function reset() {
+    //ball.kill();
+    //ball = game.add.sprite(r+startx,r+starty-80,null);
+    //game.physics.p2.enable(ball,true);
+    //ball.body.setCircle(r);
+    radThetas = mutatePoints(radThetas,0.2);
+    ball.body.clearShapes();
+    ball.body.addPolygon([],toCartesianArr(radThetas));
+    ball.body.setCollisionGroup(bCol);
+    ball.body.collides(gCol);
 
-function polygonSprite() {
-	var rtn = game.add.sprite(100,100);
-    rtn.tint = 0;
-    game.physics.p2.enable(rtn,true);
-   // console.log(rtn);
-    rtn.body.clearShapes();
-    rtn.body.addPolygon({},[0,0,100,0,150,50,100,100,0,100]);
-    //rtn.setPolygon(0,0,1,0,1,1,0,1);
+   // game.camera.follow(ball);
+}
+function mutatePoints(rt,mutationrate) {
+    var rtn = new Array(rt.length);
+    for(var i = 0; i < rt.length; i++) {
+        var r = mutateRadius(radThetas[i][0],mutationrate);
+        rtn[i] = [r,rt[i][1]];
+    }
     return rtn;
 }
+function mutateRadius(r, mutationrate) {
+    var rtn = (r+r*(Math.random()-0.5)*mutationrate);
+    if(rtn > maxRad) {
+        rtn = maxRad;
+    } else if(rtn < minRad) {
+        rtn = minRad;
+    }
+    return rtn;
+}
+function toCartesianArr(arr) {
+    var rtn = new Array(arr.length);
+    for(var i = 0; i < arr.length; i++) {
+        rtn[i] = [arr[i][0]*Math.cos(arr[i][1]),arr[i][0]*Math.sin(arr[i][1])];
+    }
+    return rtn;
+}
+
+/*function copyPoints(arr) {
+    var rtn = new Array(arr.length);
+    for(var i = 0; i < arr.length; i++) {
+        rtn[i] = new Array(2);
+        rtn[i][0] = arr[i][0];
+        rtn[i][1] = arr[i][1];
+    }
+    return rtn;
+}*/
