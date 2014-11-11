@@ -30,7 +30,7 @@ function create() {
 
     w.setCollisionGroup(bCol,gCol);
 
-    //game.camera.follow(w.sprite);
+    game.camera.follow(w.sprite);
 
     game.input.onDown.add(click, this);
 
