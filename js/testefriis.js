@@ -5,7 +5,7 @@ function preload () {
 
 }
 $(document).ready(function() {
-    setInterval(reset,200);
+    setInterval(reset,20);
 })
 
 var gCol, bCol;
