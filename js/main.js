@@ -1,18 +1,30 @@
- window.onload = function() {
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
+var wheels[];
 
-    var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create });
+function preload() {
+	game.stage.disableVisibilityChange = true;
+}
 
-    function preload () {
+function create() {
+	game.world.setBounds(0, 0, 800, 600);
 
-        game.load.image('logo', 'assets/phaser.png');
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.gravity.y = 0;
+    game.physics.p2.friction = 3.0;
 
-    }
+    gCol = game.physics.p2.createCollisionGroup();
+    bCol = game.physics.p2.createCollisionGroup();
 
-    function create () {
+    w = randomWheel(8);
+    w.create(game);
 
-        var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
-        logo.anchor.setTo(0.5, 0.5);
+    //setInterval(function() {w=w.cloneAndMutate(0.1);w.create(game); },10);
+}
 
-    }
+function update() {
+	w.sprite.body.x = STARTX;
+	w.sprite.body.y = STARTY;
+}
+function render() {
 
-};
+}
