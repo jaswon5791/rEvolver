@@ -1,5 +1,5 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
-var wheels[];
+var wheels = new Array();
 
 function preload() {
 	game.stage.disableVisibilityChange = true;
@@ -18,7 +18,7 @@ function create() {
     w = randomWheel(8);
     w.create(game);
 
-    //setInterval(function() {w=w.cloneAndMutate(0.1);w.create(game); },10);
+    setInterval(function() {w=w.cloneAndMutate(0.1);w.create(game); },1000);
 }
 
 function update() {
