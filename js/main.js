@@ -7,11 +7,11 @@ function preload() {
 }
 
 function create() {
-	game.world.setBounds(0, 0, 1e9, 1e6);
+	game.world.setBounds(0,0, 1e9, 1e6);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 300;
-    game.physics.p2.friction = 3.0;
+    game.physics.p2.friction = 5.0;
 
     gCol = game.physics.p2.createCollisionGroup();
     bCol = game.physics.p2.createCollisionGroup();
@@ -42,7 +42,7 @@ function update() {
 	if (game.camera.x + game.world.width > nextx) {
     	addSeg();
     }
-    w.sprite.body.angularVelocity = 5;
+    if(w.sprite.body.angularVelocity < 10) w.sprite.body.angularVelocity = 10;
 }
 function render() {
 
@@ -67,7 +67,8 @@ function addSeg() {
     shape.body.setCollisionGroup(gCol);
     shape.body.collides(bCol);
     shape.body.static = true;
-
+    shape.checkWorldBounds = true;
+    shape.outOfBoundsKill = true;
     
     shape.anchor.setTo(0,0);
     shape.body.rotation = nexta;
@@ -76,7 +77,11 @@ function addSeg() {
 	nextx += Math.cos(nexta)*(SEGW);
 	nexty += Math.sin(nexta)*(SEGW);
 	nexta += (Math.random()-0.5)*CHANGEA;
-    if(nexta < 0) nexta = 0;
+    if(nexta < -Math.PI/12) {
+    	nexta = -Math.PI/12;
+    } else if(nexta > Math.PI/6) {
+    	nexta = Math.PI/6;
+    }
     
 }
 

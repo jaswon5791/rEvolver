@@ -1,5 +1,5 @@
 var STARTX = 300;
-var STARTY = 400;
+var STARTY = 1e6/2;
 var MAXRAD = 100;
 var MINRAD = 10;
 var SEGW = 50;
