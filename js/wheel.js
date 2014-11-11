@@ -1,10 +1,4 @@
-//Constants
-var STARTX = 300;
-var STARTY = 400;
-var MAXRAD = 100;
-var MINRAD = 10;
 var w;
-//End Constants
 
 
 function RadTheta(rad,theta) {
@@ -25,6 +19,7 @@ Wheel.prototype.create = function(game) {
 	this.sprite = game.add.sprite(STARTX,STARTY);
 	game.physics.p2.enable(this.sprite,true);
 	this.sprite.body.addPolygon([],this.getCartesianPolygon());
+	game.camera.follow(this.sprite);
 }
 
 
@@ -56,7 +51,6 @@ Wheel.prototype.mutate = function() {
 Wheel.prototype.getCartesianPolygon = function() {
 	var rtn = new Array(this.radTheta.length);
     for(var i = 0; i < this.radTheta.length; i++) {
-    	console.log(this.radTheta[i]);
         rtn[i] = this.radTheta[i].toCartesian();
     }
     return rtn;
@@ -64,6 +58,10 @@ Wheel.prototype.getCartesianPolygon = function() {
 Wheel.prototype.update = function(game) {
 	this.sprite.body.clearShapes();
 	this.sprite.body.addPolygon([],this.getCartesianPolygon());
+}
+Wheel.prototype.setCollisionGroup = function(group,collides) {
+	this.sprite.body.setCollisionGroup(group);
+	this.sprite.body.collides(collides);
 }
 
 function randomWheel(vertices) {
