@@ -35,11 +35,12 @@ function create() {
     game.input.onDown.add(click, this);
 
 
-    
+
 }
 
 function update() {
-	if (game.camera.x + game.world.width > nextx) {
+	console.log(ground.total);
+	if (game.camera.x + game.camera.width > nextx) {
     	addSeg();
     }
     w.sprite.body.angularVelocity = 5;
@@ -67,8 +68,10 @@ function addSeg() {
     shape.body.setCollisionGroup(gCol);
     shape.body.collides(bCol);
     shape.body.static = true;
+	shape.checkWorldBounds = true;
+	shape.outOfBoundsKill = true;
 
-    
+
     shape.anchor.setTo(0,0);
     shape.body.rotation = nexta;
 
@@ -77,7 +80,7 @@ function addSeg() {
 	nexty += Math.sin(nexta)*(SEGW);
 	nexta += (Math.random()-0.5)*CHANGEA;
     if(nexta < 0) nexta = 0;
-    
+
 }
 
 function addObstacle (w,h,x,y) {
