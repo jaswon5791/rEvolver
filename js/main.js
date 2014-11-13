@@ -3,14 +3,20 @@ var ground;
 var w;
 var v;
 var maxX = STARTX;
+var starttime = Date.now();
+
+
+var nextx = STARTX-100;
+var nexty = STARTY + 80;
+var nexta = Math.PI/18;
 
 
 function preload() {
-	game.stage.disableVisibilityChange = true;
+    game.stage.disableVisibilityChange = true;
 }
 
 function create() {
-	game.world.setBounds(0,0, 1e9, 1e6);
+    game.world.setBounds(0,0, 1e9, 1e6);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 300;
@@ -24,9 +30,9 @@ function create() {
     ground.enableBody = true;
     ground.physicsBodyType = Phaser.Physics.P2JS;
 
-    for (var i = 0 ; i < 10 ; i++) {
-	   	addSeg();
-	}
+    for (var i = 0 ; i < 1000 ; i++) {
+        addSeg();
+    }
     w = new Array();
     for(var i = 0; i < 10; i++) {
         w[i] =  randomWheel(8);
@@ -45,20 +51,24 @@ function create() {
 
 function update() {
     for(var i = 0; i < w.length; i++) {
+        if (w[i].sprite.body.x > nextx) {
+            w[i].sprite.kill();
+            //w.splice(i,1);
+            continue;
+        }
         if(maxX < w[i].sprite.body.x) {
             maxX = w[i].sprite.body.x;
             game.camera.follow(w[i].sprite);
         }
         //if(w[i].sprite.body.angularVelocity < 10) w[i].sprite.body.angularVelocity = 10;
     }
+    if (w.length < 1) {
+        reset();
+    }
 }
 function render() {
 
 }
-
-var nextx = STARTX-100;
-var nexty = STARTY + 80;
-var nexta = Math.PI/18;
 
 function addSeg() {
     //create bitmap of segment
@@ -75,19 +85,17 @@ function addSeg() {
     shape.body.setCollisionGroup(gCol);
     shape.body.collides(bCol);
     shape.body.static = true;
-	shape.checkWorldBounds = true;
-	shape.outOfBoundsKill = true;
     shape.anchor.setTo(0,0);
     shape.body.rotation = nexta;
 
     //randomize
-	nextx += Math.cos(nexta)*(SEGW);
-	nexty += Math.sin(nexta)*(SEGW);
-	nexta += (Math.random()-0.5)*CHANGEA;
+    nextx += Math.cos(nexta)*(SEGW);
+    nexty += Math.sin(nexta)*(SEGW);
+    nexta += (Math.random()-0.5)*CHANGEA;
     if(nexta < 3*Math.PI/12) {
-    	nexta = 3*Math.PI/12;
+        nexta = 3*Math.PI/12;
     } else if(nexta > 3*Math.PI/6) {
-    	nexta = 3*Math.PI/6;
+        nexta = 3*Math.PI/6;
     }
 
 }
@@ -112,9 +120,12 @@ function click(pointer) {
     addObstacle(50,50,pointer.x+game.camera.x,pointer.y+game.camera.y);
 }
 function reset() {
+    starttime = Date.now();
     for(var i = 0; i < w.length; i++) {
         var s = w[i].sprite;
         s.body.x = STARTX;
         s.body.y = STARTY;
+        s.body.velocity.x = 0;
+        s.body.velocity.y = 0;
     }
 }
