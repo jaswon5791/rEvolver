@@ -1,9 +1,9 @@
-var w;
 
 
 function RadTheta(rad,theta) {
 	this.r = rad;
 	this.t = theta;
+	this.score = 1e10;
 }
 RadTheta.prototype.toCartesian = function() {
 	var x = this.r*Math.cos(this.t);

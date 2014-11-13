@@ -1,5 +1,8 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
 var ground;
+var w;
+var v;
+var maxX = STARTX;
 
 
 function preload() {
@@ -24,13 +27,15 @@ function create() {
     for (var i = 0 ; i < 10 ; i++) {
 	   	addSeg();
 	}
+    w = new Array();
+    for(var i = 0; i < 10; i++) {
+        w[i] =  randomWheel(8);
+        w[i].create(game);
 
-    w = randomWheel(8);
-    w.create(game);
+        w[i].setCollisionGroup(bCol,gCol);
+    }
 
-    w.setCollisionGroup(bCol,gCol);
-
-    game.camera.follow(w.sprite);
+    game.camera.follow(w[0].sprite);
 
     game.input.onDown.add(click, this);
 
@@ -39,11 +44,16 @@ function create() {
 }
 
 function update() {
-	console.log(ground.total);
 	if (game.camera.x + game.camera.width > nextx) {
     	addSeg();
     }
-    if(w.sprite.body.angularVelocity < 10) w.sprite.body.angularVelocity = 10;
+    for(var i = 0; i < w.length; i++) {
+        if(maxX < w[i].sprite.body.x) {
+            maxX = w[i].sprite.body.x;
+            game.camera.follow(w[i].sprite);
+        }
+        //if(w[i].sprite.body.angularVelocity < 10) w[i].sprite.body.angularVelocity = 10;
+    }
 }
 function render() {
 
@@ -77,10 +87,10 @@ function addSeg() {
 	nextx += Math.cos(nexta)*(SEGW);
 	nexty += Math.sin(nexta)*(SEGW);
 	nexta += (Math.random()-0.5)*CHANGEA;
-    if(nexta < -Math.PI/12) {
-    	nexta = -Math.PI/12;
-    } else if(nexta > Math.PI/6) {
-    	nexta = Math.PI/6;
+    if(nexta < 3*Math.PI/12) {
+    	nexta = 3*Math.PI/12;
+    } else if(nexta > 3*Math.PI/6) {
+    	nexta = 3*Math.PI/6;
     }
 
 }
@@ -103,4 +113,11 @@ function addObstacle (w,h,x,y) {
 
 function click(pointer) {
     addObstacle(50,50,pointer.x+game.camera.x,pointer.y+game.camera.y);
+}
+function reset() {
+    for(var i = 0; i < w.length; i++) {
+        var s = w[i].sprite;
+        s.body.x = STARTX;
+        s.body.y = STARTY;
+    }
 }
