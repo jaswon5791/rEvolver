@@ -21,8 +21,6 @@ Wheel.prototype.create = function(game) {
 	this.sprite.body.addPolygon([],this.getCartesianPolygon());
 }
 
-
-
 Wheel.prototype.cloneAndMutate = function(mutationRate) {
 	return new Wheel(this.mutateRadTheta(mutationRate));
 }

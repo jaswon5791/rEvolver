@@ -39,7 +39,7 @@ function create() {
 }
 
 function update() {
-	console.log(ground.total);
+	//console.log(ground.total);
 	if (game.camera.x + game.camera.width > nextx) {
     	addSeg();
     }
