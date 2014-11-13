@@ -44,9 +44,6 @@ function create() {
 }
 
 function update() {
-	if (game.camera.x + game.camera.width > nextx) {
-    	addSeg();
-    }
     for(var i = 0; i < w.length; i++) {
         if(maxX < w[i].sprite.body.x) {
             maxX = w[i].sprite.body.x;
