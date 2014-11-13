@@ -75,8 +75,6 @@ function addSeg() {
     shape.body.setCollisionGroup(gCol);
     shape.body.collides(bCol);
     shape.body.static = true;
-	shape.checkWorldBounds = true;
-	shape.outOfBoundsKill = true;
     shape.anchor.setTo(0,0);
     shape.body.rotation = nexta;
 
@@ -116,5 +114,7 @@ function reset() {
         var s = w[i].sprite;
         s.body.x = STARTX;
         s.body.y = STARTY;
+        s.body.velocity.x = 0;
+        s.body.velocity.y = 0;
     }
 }
