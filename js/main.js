@@ -19,8 +19,8 @@ function create() {
     game.world.setBounds(0,0, 1e9, 1e6);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.gravity.y = 300;
-    game.physics.p2.friction = 5.0;
+    game.physics.p2.gravity.y = 0;
+    game.physics.p2.friction = 1.0;
 
     gCol = game.physics.p2.createCollisionGroup();
     bCol = game.physics.p2.createCollisionGroup();
@@ -39,6 +39,8 @@ function create() {
         w[i].create(game);
 
         w[i].setCollisionGroup(bCol,gCol);
+        w[i].sprite.body.y += 100*Math.floor(i/5);
+        w[i].sprite.body.x += 100*(i%5);
     }
 
     game.camera.follow(w[0].sprite);
@@ -60,6 +62,9 @@ function update() {
             maxX = w[i].sprite.body.x;
             game.camera.follow(w[i].sprite);
         }
+
+        w[i].sprite.body.velocity.x = 0;
+        w[i].sprite.body.velocity.y = 0;
         //if(w[i].sprite.body.angularVelocity < 10) w[i].sprite.body.angularVelocity = 10;
     }
     if (w.length < 1) {
@@ -127,5 +132,18 @@ function reset() {
         s.body.y = STARTY;
         s.body.velocity.x = 0;
         s.body.velocity.y = 0;
+    }
+}
+
+function mutateAll() {
+    for(var i = 0; i < w.length; i++) {
+        var x = w[i].sprite.body.x;
+        var y = w[i].sprite.body.y;
+        w[i].mutate();
+
+        w[i].sprite.body.x = x;
+        w[i].sprite.body.y = y;
+
+        w[i].sprite.tint = 0;
     }
 }
