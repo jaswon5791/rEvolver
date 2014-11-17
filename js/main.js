@@ -1,6 +1,7 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
 var ground;
 var w;
+var best = new binaryHeap();
 var v;
 var firstPlace;
 var starttime = Date.now();
@@ -40,8 +41,6 @@ function create() {
         w[i].create(game);
 
         w[i].setCollisionGroup(bCol,gCol);
-        //w[i].sprite.body.y += 100*Math.floor(i/5);
-        //w[i].sprite.body.x += 100*(i%5);
     }
     firstPlace = w[0];
 
@@ -56,10 +55,10 @@ function create() {
 function update() {
     for(var i = 0; i < w.length; i++) {
         if (w[i].sprite.body.x > nextx) {
+        	w[i].score = Date.now() - starttime;
             w[i].sprite.kill();
             w[i].sprite.body.x = STARTX;
             w[i].sprite.body.y = STARTY;
-            //w.splice(i,1);
             continue;
         }
         if(firstPlace.sprite.body.x < w[i].sprite.body.x) {
@@ -71,9 +70,6 @@ function update() {
         //w[i].sprite.body.velocity.y = 0;
         w[i].sprite.body.angularVelocity = 8;
     }
-    //if (w.length < 1) {
-       // reset();
-    //}
 }
 function render() {
 

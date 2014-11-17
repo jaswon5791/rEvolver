@@ -61,6 +61,9 @@ Wheel.prototype.setCollisionGroup = function(group,collides) {
 	this.sprite.body.setCollisionGroup(group);
 	this.sprite.body.collides(collides);
 }
+Wheel.prototype.getScore = function() {
+	return this.score;
+}
 
 function randomWheel(vertices) {
 	var rt = new Array(vertices);
