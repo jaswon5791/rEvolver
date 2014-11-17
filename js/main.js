@@ -20,7 +20,7 @@ function create() {
 
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 300;
-    game.physics.p2.friction = 0.3;
+    game.physics.p2.friction = 1.4;
 
     gCol = game.physics.p2.createCollisionGroup();
     bCol = game.physics.p2.createCollisionGroup();
@@ -30,6 +30,7 @@ function create() {
     ground.enableBody = true;
     ground.physicsBodyType = Phaser.Physics.P2JS;
 
+    //terrain generation
     for (var i = 0 ; i < 50 ; i++) {
         addSeg();
     }
@@ -68,7 +69,7 @@ function update() {
 
         //w[i].sprite.body.velocity.x = 0;
         //w[i].sprite.body.velocity.y = 0;
-        //if(w[i].sprite.body.angularVelocity < 10) w[i].sprite.body.angularVelocity = 10;
+        w[i].sprite.body.angularVelocity = 8;
     }
     //if (w.length < 1) {
        // reset();
@@ -99,12 +100,13 @@ function addSeg() {
     //randomize
     nextx += Math.cos(nexta)*(SEGW);
     nexty += Math.sin(nexta)*(SEGW);
-    nexta += (Math.random()-0.5)*CHANGEA;
-    if(nexta < 3*Math.PI/12) {
-        nexta = 3*Math.PI/12;
-    } else if(nexta > 3*Math.PI/6) {
-        nexta = 3*Math.PI/6;
-    }
+    // nexta += (Math.random()-0.5)*CHANGEA;
+    // if(nexta < 3*Math.PI/12) {
+    //     nexta = 3*Math.PI/12;
+    // } else if(nexta > 3*Math.PI/6) {
+    //     nexta = 3*Math.PI/6;
+    // }
+    nexta += (STARTY-nexty)*Math.random()*.001;
 
 }
 

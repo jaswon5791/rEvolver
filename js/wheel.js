@@ -19,6 +19,7 @@ Wheel.prototype.create = function(game) {
 	this.sprite = game.add.sprite(STARTX,STARTY);
 	game.physics.p2.enable(this.sprite,true);
 	this.sprite.body.addPolygon([],this.getCartesianPolygon());
+	this.sprite.body.mass = 1000;
 }
 
 Wheel.prototype.cloneAndMutate = function(mutationRate) {
