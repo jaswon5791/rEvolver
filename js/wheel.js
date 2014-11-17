@@ -25,6 +25,9 @@ Wheel.prototype.create = function(game) {
 Wheel.prototype.cloneAndMutate = function(mutationRate) {
 	return new Wheel(this.mutateRadTheta(mutationRate));
 }
+Wheel.prototype.clone = function() {
+	return new Wheel(this.radTheta);
+}
 Wheel.prototype.mutateRadius = function(r,mutationRate) {
 	var rtn = (r+r*(Math.random()-0.5)*mutationRate);
     if(rtn > MAXRAD) {

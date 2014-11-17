@@ -11,6 +11,7 @@ var starttime = Date.now();
 var nextx = STARTX-100;
 var nexty = STARTY + 80;
 var nexta = Math.PI/18;
+var timeout;
 
 
 function preload() {
@@ -37,12 +38,13 @@ function create() {
         addSeg();
     }
     w = new Array();
-    for(var i = 0; i < 10; i++) {
+    for(var i = 0; i < 20; i++) {
         w[i] =  randomWheel(8);
         w[i].create(game);
 
         w[i].setCollisionGroup(bCol,gCol);
     }
+    timeout = setTimeout(reset,20000);
     firstPlace = w[0];
 
     game.camera.follow(w[0].sprite);
@@ -52,13 +54,13 @@ function create() {
 
 
 }
-var currentTimeout;
 function update() {
 	var alldone = true;
 	var newbest = false;
     for(var i = 0; i < w.length; i++) {
-        if (w[i].sprite.body.x > nextx) {
+        if (!w[i].irrelevant && w[i].sprite.body.x > nextx) {
         	w[i].score = Date.now() - starttime;
+        	if(best.length < 4) best.push(w[i].clone());
         	w[i].irrelevant = true;
             //w[i].sprite.body.x = STARTX;
             //w[i].sprite.body.y = STARTY;
@@ -70,6 +72,7 @@ function update() {
             game.camera.follow(w[i].sprite);
         }
     	if(!w[i].irrelevant) alldone = false;
+        w[i].sprite.body.angularVelocity = 8;
     }
     if(newbest) {
     	/*clearTimeout(currentTimeout);
@@ -83,7 +86,6 @@ function update() {
 
         //w[i].sprite.body.velocity.x = 0;
         //w[i].sprite.body.velocity.y = 0;
-        w[i].sprite.body.angularVelocity = 8;
     }
     if(alldone) reset();
 }
@@ -142,15 +144,34 @@ function click(pointer) {
     addObstacle(50,50,pointer.x+game.camera.x,pointer.y+game.camera.y);
 }
 function reset() {
+	clearTimeout(timeout);
     starttime = Date.now();
     for(var i = 0; i < w.length; i++) {
-    	w[i].irrelevant = false;
+    	w[i].sprite.destroy();
+    	/*w[i].irrelevant = false;
         var s = w[i].sprite;
         s.body.x = STARTX;
         s.body.y = STARTY;
         s.body.velocity.x = 0;
-        s.body.velocity.y = 0;
+        s.body.velocity.y = 0;*/
     }
+    for(var i = 0; i < best.length; i++) {
+    	for(var a = 0; a < 5-i; a++) {
+    		best.push(best[i].cloneAndMutate(MUTATION_RATE));
+    	}
+    }
+    while(best.length < 20) {
+    	best.push(randomWheel(8));
+    }
+    w = best;
+    best = [];
+    for(var i = 0; i < w.length; i++) {
+    	w[i].create(game);
+    	w[i].setCollisionGroup(bCol,gCol);
+    }
+    firstPlace = w[0];
+    game.camera.follow(w[0].sprite);
+    timeout = setTimeout(reset,20000);
 }
 
 function mutateAll() {

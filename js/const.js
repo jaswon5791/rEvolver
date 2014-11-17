@@ -5,3 +5,4 @@ var MINRAD = 10;
 var SEGW = 50;
 var SEGH = 20;
 var CHANGEA = 7*Math.PI/180;
+var MUTATION_RATE = 0.1;
