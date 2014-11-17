@@ -1,7 +1,8 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
 var ground;
 var w;
-var best = new binaryHeap();
+//var best = new binaryHeap();
+var best = [];
 var v;
 var firstPlace;
 var starttime = Date.now();
@@ -50,21 +51,36 @@ function create() {
 
 
 }
-
+var currentTimeout;
 function update() {
+	var alldone = true;
+	var newbest = false;
     for(var i = 0; i < w.length; i++) {
         if (w[i].sprite.body.x > nextx) {
         	w[i].score = Date.now() - starttime;
-            w[i].sprite.kill();
-            w[i].sprite.body.x = STARTX;
-            w[i].sprite.body.y = STARTY;
+        	w[i].irrelevant = true;
+            //w[i].sprite.body.x = STARTX;
+            //w[i].sprite.body.y = STARTY;
             continue;
         }
-        if(firstPlace.sprite.body.x < w[i].sprite.body.x) {
+        if(!w[i].irrelevant && (firstPlace.irrelevant || firstPlace.sprite.body.x < w[i].sprite.body.x)) {
             firstPlace = w[i];
+            newbest = true;
             game.camera.follow(w[i].sprite);
         }
+    	if(!w[i].irrelevant) alldone = false;
     }
+    if(newbest) {
+    	/*clearTimeout(currentTimeout);
+    	game.camera.follow(null);
+    	game.add.tween(game.camera).to({
+    		x: firstPlace.sprite.body.x - (game.camera.width/2),
+    		y: firstPlace.sprite.body.y - (game.camera.height/2)
+    	},300,Phaser.Easing.Quadratic.InOut,true);
+    	currentTimeout = setTimeout(function() {game.camera.follow(firstPlace.sprite);},300);*/
+    	game.camera.follow(firstPlace.sprite);
+    }
+    if(alldone) reset();
 }
 function render() {
 
@@ -122,6 +138,7 @@ function click(pointer) {
 function reset() {
     starttime = Date.now();
     for(var i = 0; i < w.length; i++) {
+    	w[i].irrelevant = false;
         var s = w[i].sprite;
         s.body.x = STARTX;
         s.body.y = STARTY;

@@ -95,6 +95,9 @@ var binaryHeap = function () {
 
             nodes.push(value);
             siftUp(nodes.length - 1);
+        },
+        clear: function() {
+            nodes = [];
         }
     };
 };
