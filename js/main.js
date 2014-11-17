@@ -2,7 +2,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 var ground;
 var w;
 var v;
-var maxX = STARTX;
+var firstPlace;
 var starttime = Date.now();
 
 
@@ -19,8 +19,8 @@ function create() {
     game.world.setBounds(0,0, 1e9, 1e6);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.gravity.y = 0;
-    game.physics.p2.friction = 1.0;
+    game.physics.p2.gravity.y = 300;
+    game.physics.p2.friction = 0.3;
 
     gCol = game.physics.p2.createCollisionGroup();
     bCol = game.physics.p2.createCollisionGroup();
@@ -30,7 +30,7 @@ function create() {
     ground.enableBody = true;
     ground.physicsBodyType = Phaser.Physics.P2JS;
 
-    for (var i = 0 ; i < 1000 ; i++) {
+    for (var i = 0 ; i < 50 ; i++) {
         addSeg();
     }
     w = new Array();
@@ -39,9 +39,10 @@ function create() {
         w[i].create(game);
 
         w[i].setCollisionGroup(bCol,gCol);
-        w[i].sprite.body.y += 100*Math.floor(i/5);
-        w[i].sprite.body.x += 100*(i%5);
+        //w[i].sprite.body.y += 100*Math.floor(i/5);
+        //w[i].sprite.body.x += 100*(i%5);
     }
+    firstPlace = w[0];
 
     game.camera.follow(w[0].sprite);
 
@@ -55,21 +56,23 @@ function update() {
     for(var i = 0; i < w.length; i++) {
         if (w[i].sprite.body.x > nextx) {
             w[i].sprite.kill();
+            w[i].sprite.body.x = STARTX;
+            w[i].sprite.body.y = STARTY;
             //w.splice(i,1);
             continue;
         }
-        if(maxX < w[i].sprite.body.x) {
-            maxX = w[i].sprite.body.x;
+        if(firstPlace.sprite.body.x < w[i].sprite.body.x) {
+            firstPlace = w[i];
             game.camera.follow(w[i].sprite);
         }
 
-        w[i].sprite.body.velocity.x = 0;
-        w[i].sprite.body.velocity.y = 0;
+        //w[i].sprite.body.velocity.x = 0;
+        //w[i].sprite.body.velocity.y = 0;
         //if(w[i].sprite.body.angularVelocity < 10) w[i].sprite.body.angularVelocity = 10;
     }
-    if (w.length < 1) {
-        reset();
-    }
+    //if (w.length < 1) {
+       // reset();
+    //}
 }
 function render() {
 
