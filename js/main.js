@@ -83,8 +83,6 @@ function update() {
     	},300,Phaser.Easing.Quadratic.InOut,true);
     	currentTimeout = setTimeout(function() {game.camera.follow(firstPlace.sprite);},300);*/
     	game.camera.follow(firstPlace.sprite);
-
-        w[i].sprite.body.angularVelocity = 8;
     }
     if(alldone) reset();
 }
